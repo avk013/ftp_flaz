@@ -16,6 +16,7 @@ type
     Button1: TButton;
     Button2: TButton;
     Button3: TButton;
+    Button4: TButton;
     b_tra2serv: TButton;
     b_copyarh: TButton;
     copy_path: TEdit;
@@ -293,7 +294,7 @@ Ini:=TIniFile.Create(base_dir+'client_b.ini');
 if (FileExists(base_dir+'client_b.ini')) then
 begin
 dir1:=Ini.ReadString('set','path',copy_path.Caption);
-dir1:=Ini.ReadString('set','us_name',Edit4.Caption);
+us_name:=Ini.ReadString('set','us_name',Edit4.Caption);
 prefix:=Ini.ReadString('set','prefix',Edit3.Caption);
 end else
 begin
@@ -302,6 +303,8 @@ begin
   prefix:='ar1_';
   end ;
 // инициализируем настройки
+Form1.Left:=10;
+Form1.Top:=10;
 apas:='dctcnhfyyj100+';
 pas:='[htyjdfzyfxbyrfeGtnhjdf';
 server:='172.16.12.26';
@@ -329,8 +332,9 @@ pass := InputBox('settings', 'password', '1000');
 if (pass='1111') then
 //IniFile.WriteString('local','path1',Edit2.Caption);
 begin
-
-Ini.WriteString('set','path',Edit2.Caption);
+Ini.WriteString('set','path',copy_path.Caption);
+Ini.WriteString('set','us_name',Edit4.Caption);
+Ini.WriteString('set','prefix',Edit3.Caption);
 end;
 //config();
 end;

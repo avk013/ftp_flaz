@@ -1,7 +1,7 @@
 object Form1: TForm1
-  Left = 1517
+  Left = 566
   Height = 223
-  Top = 547
+  Top = 187
   Width = 369
   Caption = 'file_transport_UDP(C)'
   ClientHeight = 223
@@ -106,17 +106,17 @@ object Form1: TForm1
       object label1: TLabel
         Left = 0
         Height = 15
-        Top = 117
+        Top = 120
         Width = 36
         Caption = 'in_files'
         ParentColor = False
       end
       object Label3: TLabel
-        Left = 128
+        Left = 0
         Height = 15
-        Top = 40
-        Width = 30
-        Caption = 'serv2:'
+        Top = 144
+        Width = 43
+        Caption = 'base_dir'
         ParentColor = False
       end
       object Label4: TLabel
@@ -141,15 +141,16 @@ object Form1: TForm1
         Top = 112
         Width = 317
         OnDblClick = copy_pathDblClick
+        ParentShowHint = False
         ReadOnly = True
         TabOrder = 0
         Text = 'copy_path'
       end
       object Edit2: TEdit
-        Left = 165
+        Left = 48
         Height = 23
-        Top = 32
-        Width = 192
+        Top = 136
+        Width = 309
         TabOrder = 1
         Text = 'Edit2'
       end
@@ -505,6 +506,14 @@ object Form1: TForm1
           38F9FF000A28A9E8475630D14514C602968A28284FE214FEA79E78A28A4F605B
           8C4E539F5A75145522DEE145145023FFD9
         }
+      end
+      object Button4: TButton
+        Left = 296
+        Height = 15
+        Top = 176
+        Width = 40
+        Caption = 'reset'
+        TabOrder = 4
       end
     end
     object post_sheet: TTabSheet
