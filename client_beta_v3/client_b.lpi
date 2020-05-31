@@ -27,7 +27,7 @@
       <CompressFinally Value="False"/>
       <OpenInFileMan Value="True"/>
       <UseFileFilters Value="True"/>
-      <FileFilter Value="*.(pas|pp|inc|lpr|lfm|lrs|lpi|lpk|xml|sh|ico)"/>
+      <FileFilter Value="*.(pas|pp|inc|lpr|lfm|lrs|lpi|lpk|xml|sh|ico|txt)"/>
     </PublishOptions>
     <RunParams>
       <FormatVersion Value="2"/>

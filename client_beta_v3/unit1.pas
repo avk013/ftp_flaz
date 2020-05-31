@@ -6,13 +6,11 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls,
-  ExtCtrls, Ipfilebroker, FTPsend, ShellApi, FileUtil, LazFileUtils, Windows,
-  Types, IniFiles;
-
+  ExtCtrls, Ipfilebroker, FTPsend, FileUtil, LazFileUtils, Windows,
+  IniFiles;
+//synapse library
 type
-
   { TForm1 }
-
   TForm1 = class(TForm)
     Button1: TButton;
     Button2: TButton;
@@ -47,16 +45,13 @@ type
     procedure Button2Click(Sender: TObject);
     procedure b_copyarhClick(Sender: TObject);
     procedure copy_pathDblClick(Sender: TObject);
-    procedure copy_pathKeyPress(Sender: TObject; var Key: char);
     procedure Edit4Enter(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Image1Click(Sender: TObject);
     procedure Timer1Timer(Sender: TObject);
     procedure Timer2Timer(Sender: TObject);
   private
-
   public
-
   end;
 
 var
@@ -70,64 +65,7 @@ uses lib_pro;
 {$R *.lfm}
 
 { TForm1 }
-//synapse library
-procedure config();
-begin //папка для беккапа
-//if FileExists(base_dir+'config.ini')
-end;
 
-procedure extract_();
-var // распаковка консольной версии 7-zip из файла ресурсов
-  S: TResourceStream;
-  F: TFileStream;
-begin //распаковка архиватора если его нет
-if not FileExists(base_dir+'7z.exe') then
-begin
-S := TResourceStream.Create(HInstance, '7Z', RT_RCDATA);
-try
-   // create a file mydata.dat in the application directory
-   F := TFileStream.Create(ExtractFilePath(ParamStr(0)) + '7z.exe', fmCreate);
-   try
-     F.CopyFrom(S, S.Size); // copy data from the resource stream to file stream
-   finally
-     F.Free; // destroy the file stream
-   end;
- finally
-   S.Free; // destroy the resource stream
- end;
-end;
-end;
-
-
-function DownloadFTP(URL, TargetFile: string): boolean;
-const
-  FTPPort=21;
-  FTPScheme='ftp://'; //URI scheme name for FTP URLs
-var
-  Host: string;
-  Port: integer;
-  Source: string;
-  FoundPos: integer;
-begin
-  // Strip out scheme info:
-  if LeftStr(URL, length(FTPScheme))=FTPScheme then URL:=Copy(URL, length(FTPScheme)+1, length(URL));
-
-  // Crude parsing; could have used URI parsing code in FPC packages...
-  FoundPos:=pos('/', URL);
-  Host:=LeftStr(URL, FoundPos-1);
-  Source:=Copy(URL, FoundPos+1, Length(URL));
-
-  //Check for port numbers:
-  FoundPos:=pos(':', Host);
-  Port:=FTPPort;
-  if FoundPos>0 then
-  begin
-    Host:=LeftStr(Host, FoundPos-1);
-    Port:=StrToIntDef(Copy(Host, FoundPos+1, Length(Host)),21);
-  end;
-  Result:=FtpGetFile(Host, IntToStr(Port), Source, TargetFile, 'anonymous', 'fpc@example.com');
-  if result=false then writeln('DownloadFTP: error downloading '+URL+'. Details: host: '+Host+'; port: '+Inttostr(Port)+'; remote path: '+Source+' to '+TargetFile);
-end;
 function FtpGetDir(const IP, Port, Path, User, Pass: string; DirList: TStringList): Boolean;
 var
   i: Integer;
@@ -146,7 +84,6 @@ begin
     for i := 0 to FtpList.Count -1 do
     begin
       s := FTPList[i].FileName;
-      //DirList.Add(s);
       Form1.ListBox1.Items.Add(s);
     end;
     Logout;
@@ -154,6 +91,7 @@ begin
     Free;
   end;
 end;
+
 procedure TForm1.b_tra2servClick(Sender: TObject);
 begin
 if not FileExists(dir_arh_f) then ShowMessage('BUT error finding archive');
@@ -165,18 +103,11 @@ if not FileExists(dir_arh_f) then ShowMessage('BUT error finding archive');
  FTP.Password:= pas;
  LocalPath:=dir_arh_f;
  RemotePath:=prefix+FormatDateTime('dd.mm.yyyy', Now)+'.7z';
-try
-////
+try ////
 if (FTP.Login) then
 begin
-
-///
       FTP.DirectFileName := LocalPath;
-      FTP.DirectFile     := True;
-     // FTP.CreateDir('1234567890');
-     // FTP.RetrieveFile(RemotePath, True);
-      // FTP.s
-       //.StoreUniqueFile:=True;
+      FTP.DirectFile     := True; // FTP.CreateDir('1234567890');
 if FTP.StoreFile(RemotePath, True) then
 begin
 ShowMessage('successful copying the database archive');
@@ -187,7 +118,7 @@ end
   finally
     FTP.Free;
   end;
-// если точно все скачалось....удаляем с локального компа...
+// если НУЖНО и точно все скачалось....удаляем с локального компа...
 //if DeleteDirectory(dir_arh_f,False)then;
 end;
 
@@ -209,13 +140,10 @@ if directoryExists(loc_dir) then else  CreateDir(loc_dir);
  FTP.Username := us_name;
  FTP.Password:= pas;
 ShowMessage(inttostr(listbox1.ItemIndex));
-//listbox1.ItemIndex индекс строки с именем файла
-if listbox1.ItemIndex<>-1 then
+if listbox1.ItemIndex<>-1 then //listbox1.ItemIndex индекс строки с именем файла
 try
-////
 if (FTP.Login) then
 begin
-///
      RemotePath:=listbox1.Items[ListBox1.ItemIndex];
      LocalPath:=loc_dir+listbox1.Items[ListBox1.ItemIndex];
       FTP.DirectFileName := LocalPath;
@@ -237,7 +165,7 @@ begin
 end;
 
 procedure TForm1.b_copyarhClick(Sender: TObject);
-var cmdline, dir2, d1,d2 :string;
+var cmdline, dir2:string;
 begin
 ///копирование
 b_copyarh.Visible:=False;
@@ -248,12 +176,9 @@ dir_temp:=base_dir+'Temp\'+FormatDateTime('dd.mm.yyyy', Now);
 CreateDir(dir_temp);
 //копируем необходимые файлы и создаем файл ОК
 cmdline:='xcopy /Y /E /C '+dir1+' '+dir_temp + '\ && NULL>'+dir_temp +'\ok1.txt';
-ShowMessage(cmdline);
-//dir_arh_f:=dir2+'\archive.zip';
 dir_arh_f:=dir2+'\'+prefix+FormatDateTime('dd.mm.yyyy', Now)+'.zip';
 //пытаемся в одну строку скопировать и архивировать файлы
 cmdline:=cmdline+' & '+base_dir+'7z a -tzip -mx5 -r0 -p'+apas+' '+dir_arh_f+' '+dir_temp+ '&& NULL>'+dir_temp +'\ok2.txt';
-//ShowMessage(cmdline);
 // "/k" - для того чтобы консоль не закрылась...контроль, менять потом на /c
 //if ShellExecute(0,nil, PChar('cmd'),PChar('/c '+cmdline),nil,1) =0 then;
 if ShellExecute(0,nil, PChar('cmd'),PChar('/c '+cmdline),nil,0) =0 then;
@@ -266,7 +191,6 @@ Label7.Visible:=True;
 end;
 
 procedure TForm1.copy_pathDblClick(Sender: TObject);
-var i:string;
 begin
   if SelectDirectoryDialog1.Execute then
     begin
@@ -276,24 +200,18 @@ copy_path.Caption:=dir1;
     end;
 end;
 
-procedure TForm1.copy_pathKeyPress(Sender: TObject; var Key: char);
-begin
-
-end;
-
 procedure TForm1.Edit4Enter(Sender: TObject);
 var i:string;
 begin
 i:=Edit4.Text;
-  Ini.WriteString('set','us_name',i);
+Ini.WriteString('set','us_name',i);
 end;
-
 
 procedure TForm1.FormCreate(Sender: TObject);
 var poss: integer;
 begin
-//7z a -tzip -mx5 -r0 archive.zip c:\temp
 // считываем настройки из ini-файла
+PageControl1.ActivePage.PageIndex:=0;
 Ini:=TIniFile.Create(base_dir+'client_b.ini');
 if (FileExists(base_dir+'client_b.ini')) then
 begin
@@ -307,9 +225,7 @@ begin
   us_name:='ftp_test#21';
   prefix:='ar1_';
   server:='172.16.12.26';
-//  port:='21';
-  end ;
-// инициализируем настройки
+  end ;// инициализируем настройки
 Form1.Left:=10;
 Form1.Top:=10;
 apas:='dctcnhfyyj100+';
@@ -318,8 +234,6 @@ pas:='[htyjdfzyfxbyrfeGtnhjdf';
 //pas:='3728'+us_name+'cookies_bububu';
 poss:=pos('#',us_name);
 port:= RightStr(us_name, Length(us_name)-poss);
-//ShowMessage(port);
-//
 prefix:=prefix+'coo';
 //папка в кото расположен
 base_dir:=ExtractFileDir(Application.ExeName)+'\';
@@ -334,9 +248,8 @@ Label7.Visible:=false;
 Timer1.Enabled:=false;
 b_tra2serv.Visible:=false;
 Button1.Visible:=false;
-extract_;
+extract_rc('7Z',base_dir+'7z.exe');
 end;
-
 procedure TForm1.Image1Click(Sender: TObject);
 var pass:string;
   ipn:longword;
@@ -348,7 +261,6 @@ server:=Edit1.Text;
 us_name:=Edit4.Text;
 if (StrToIP(server, ipn)=False) then
 ShowMessage('Format IP server not valid'+server+'_'+inttostr(ipn))
-//ShowMessage(DoSomething());
 else
 if (pos('#',us_name)=0) then
 ShowMessage('Format username no valid, is missing #')
@@ -359,9 +271,7 @@ Ini.WriteString('set','us_name',Edit4.Caption);
 Ini.WriteString('set','prefix',Edit3.Caption);
 Ini.WriteString('set','server',Edit1.Caption);
 end;
-//config();
 end;
-
 procedure TForm1.Timer1Timer(Sender: TObject);
 var d1,d2:string;
 begin
@@ -380,17 +290,13 @@ end else begin end
 else ShowMessage('error create arhive')
 else ShowMessage('error create copies files');
 if not FileExists(dir_arh_f) then ShowMessage('BUT error finding archive');
-
 end;
-
 procedure TForm1.Timer2Timer(Sender: TObject);
-begin
-//  / - \ |
+begin //  / - \ |
 if (Label6.Caption='|') then Label6.Caption:='/'
 else if (Label6.Caption='/') then Label6.Caption:='-'
 else if (Label6.Caption='-') then Label6.Caption:='\'
 else if (Label6.Caption='\') then Label6.Caption:='|';
 end;
-
 end.
 

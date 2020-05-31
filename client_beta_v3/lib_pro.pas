@@ -4,32 +4,19 @@ unit lib_pro;
 
 interface
 
+//uses
+//  Classes, SysUtils, Dialogs;
 uses
-  Classes, SysUtils;
-//public
-//function StrToIP(const strIP: AnsiString; out uintIP: Longword): boolean;
-// end;
-//private
-
-//public
-
-//end;
-//type
-//  Tlib_pro = record
-//  public
-// class
-  //function DoSomething: string;
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls,
+  ExtCtrls, Ipfilebroker, FileUtil, LazFileUtils,Windows;
+//пребраз.строки в айпи
 function StrToIP(const strIP: AnsiString; out uintIP: Longword): boolean;
-//  end;
+//распаковка из файла ресурсов
+procedure extract_rc(name_rc:string;name_file_full:string);
 implementation
 
-function DoSomething: string;
-begin
-  Result := 'Something done';
-end;
-
 function StrToIP(const strIP: AnsiString; out uintIP: Longword): boolean;
-var // Автор:Николай Федоровских,fenik17,fenik17@gmail.com 4 октября 2011 г.
+var // Автор функции:Николай Федоровских,fenik17,fenik17@gmail.com 04.10.2011
   pCurChar: ^byte;
   prevChar: byte;
   i, dotCount, digitCount: integer;
@@ -74,6 +61,28 @@ begin
   end;
   Result := false;
   uintIP := 0;
+end;
+///// ftp
+///// RC
+procedure extract_rc(name_rc:string;name_file_full:string);
+var // распаковка из файла ресурсов
+  S: TResourceStream;
+  F: TFileStream;
+begin //распаковка файла если  его нет
+if not FileExists(name_file_full) then
+begin
+S := TResourceStream.Create(HInstance, name_rc, RT_RCDATA);
+try
+   F := TFileStream.Create(name_file_full, fmCreate);
+   try
+     F.CopyFrom(S, S.Size); // copy data from the resource stream to file stream
+   finally
+     F.Free; // destroy the file stream
+   end;
+ finally
+   S.Free; // destroy the resource stream
+ end;
+end;// else ShowMessage('OK'+name_file_full);
 end;
 end.
 

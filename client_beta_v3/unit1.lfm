@@ -13,8 +13,8 @@ object Form1: TForm1
     Height = 221
     Top = 0
     Width = 368
-    ActivePage = setup_sheet
-    TabIndex = 1
+    ActivePage = get_sheet
+    TabIndex = 0
     TabOrder = 0
     object get_sheet: TTabSheet
       Caption = 'main'
