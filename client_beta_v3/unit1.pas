@@ -6,7 +6,8 @@ interface
 
 uses
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs, ComCtrls, StdCtrls,
-  ExtCtrls, Ipfilebroker, FTPsend, ShellApi, FileUtil, LazFileUtils, Windows, Types, IniFiles;
+  ExtCtrls, Ipfilebroker, FTPsend, ShellApi, FileUtil, LazFileUtils, Windows,
+  Types, IniFiles;
 
 type
 
@@ -20,11 +21,13 @@ type
     b_tra2serv: TButton;
     b_copyarh: TButton;
     copy_path: TEdit;
+    Edit1: TEdit;
     Edit2: TEdit;
     Edit3: TEdit;
     Edit4: TEdit;
     Image1: TImage;
     label1: TLabel;
+    Label2: TLabel;
     Label3: TLabel;
     Label4: TLabel;
     Label5: TLabel;
@@ -63,7 +66,7 @@ var
   pas, server,port, us_name, prefix:string;
   Ini: TIniFile;
 implementation
-
+uses lib_pro;
 {$R *.lfm}
 
 { TForm1 }
@@ -287,6 +290,7 @@ end;
 
 
 procedure TForm1.FormCreate(Sender: TObject);
+var poss: integer;
 begin
 //7z a -tzip -mx5 -r0 archive.zip c:\temp
 // считываем настройки из ini-файла
@@ -296,26 +300,34 @@ begin
 dir1:=Ini.ReadString('set','path',copy_path.Caption);
 us_name:=Ini.ReadString('set','us_name',Edit4.Caption);
 prefix:=Ini.ReadString('set','prefix',Edit3.Caption);
+server:=Ini.ReadString('set','server',Edit1.Caption);
 end else
 begin
   dir1:='Y:\!test_pro\test';
-  us_name:='ftp_test';
+  us_name:='ftp_test#21';
   prefix:='ar1_';
+  server:='172.16.12.26';
+//  port:='21';
   end ;
 // инициализируем настройки
 Form1.Left:=10;
 Form1.Top:=10;
 apas:='dctcnhfyyj100+';
 pas:='[htyjdfzyfxbyrfeGtnhjdf';
-server:='172.16.12.26';
-port:='21';
+//планируется встраивать пароль с печеньками
+//pas:='3728'+us_name+'cookies_bububu';
+poss:=pos('#',us_name);
+port:= RightStr(us_name, Length(us_name)-poss);
+//ShowMessage(port);
+//
 prefix:=prefix+'coo';
 //папка в кото расположен
 base_dir:=ExtractFileDir(Application.ExeName)+'\';
 //папка для передачи
 copy_path.Text:=dir1;
+Edit1.Text:=server;
 Edit2.Text:=base_dir;
-Edit3.Text:='';
+Edit3.Text:=prefix;
 Edit4.Text:=us_name;
 Label6.Visible:=false;
 Label7.Visible:=false;
@@ -327,14 +339,25 @@ end;
 
 procedure TForm1.Image1Click(Sender: TObject);
 var pass:string;
+  ipn:longword;
 begin  //настройка
 pass := InputBox('settings', 'password', '1000');
 if (pass='1111') then
 //IniFile.WriteString('local','path1',Edit2.Caption);
+server:=Edit1.Text;
+us_name:=Edit4.Text;
+if (StrToIP(server, ipn)=False) then
+ShowMessage('Format IP server not valid'+server+'_'+inttostr(ipn))
+//ShowMessage(DoSomething());
+else
+if (pos('#',us_name)=0) then
+ShowMessage('Format username no valid, is missing #')
+else
 begin
 Ini.WriteString('set','path',copy_path.Caption);
 Ini.WriteString('set','us_name',Edit4.Caption);
 Ini.WriteString('set','prefix',Edit3.Caption);
+Ini.WriteString('set','server',Edit1.Caption);
 end;
 //config();
 end;
