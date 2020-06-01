@@ -1,4 +1,4 @@
-program client_b;
+program flaz_r;
 
 {$mode objfpc}{$H+}
 

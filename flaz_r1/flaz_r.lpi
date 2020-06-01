@@ -54,7 +54,7 @@
     </RequiredPackages>
     <Units Count="3">
       <Unit0>
-        <Filename Value="client_b.lpr"/>
+        <Filename Value="flaz_r.lpr"/>
         <IsPartOfProject Value="True"/>
       </Unit0>
       <Unit1>
@@ -75,7 +75,7 @@
     <Version Value="11"/>
     <PathDelim Value="\"/>
     <Target>
-      <Filename Value="client_b"/>
+      <Filename Value="flaz_r"/>
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
